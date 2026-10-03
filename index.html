@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Учись и играй">
+<meta name="theme-color" content="#7A9B5C">
+<link rel="apple-touch-icon" href="icon.png">
+<link rel="manifest" href="manifest.json">
+<title>Учись и играй</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#F2E8D5;--card:#FBF6EC;--green:#7A9B5C;--green-dark:#5A7A42;--green-light:#DCEACF;--text:#3A3128;--soft:#7A6F60;--peach:#E8A87C;--sh:0 2px 4px rgba(90,70,50,.06),0 6px 14px rgba(90,70,50,.08);--txt-base:17px;--txt-prompt:20px;--txt-opt:30px;--txt-opt-text:18px;--txt-letter:140px;--txt-word:30px;--txt-title:22px}
+body.theme-dark{--bg:#2C2A26;--card:#3A3732;--text:#EDE8DC;--soft:#A9A196;--sh:0 2px 4px rgba(0,0,0,.25),0 6px 14px rgba(0,0,0,.3)}
+body.fs-small{--txt-base:15px;--txt-prompt:18px;--txt-opt:26px;--txt-opt-text:15px;--txt-letter:110px;--txt-word:26px;--txt-title:20px}
+body.fs-large{--txt-base:20px;--txt-prompt:24px;--txt-opt:36px;--txt-opt-text:21px;--txt-letter:160px;--txt-word:36px;--txt-title:26px}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:'M PLUS Rounded 1c',-apple-system,system-ui,sans-serif;background:radial-gradient(circle at 20% 30%,rgba(200,180,150,.10) 0,transparent 40%),radial-gradient(circle at 80% 70%,rgba(180,160,130,.08) 0,transparent 40%),var(--bg);color:var(--text);min-height:100vh;display:flex;justify-content:center;padding:16px 16px 150px;user-select:none;font-size:var(--txt-base);line-height:1.45;font-weight:500;transition:background .3s,color .3s}
+#app{width:100%;max-width:720px}
+.hd{display:flex;align-items:center;gap:8px;padding:8px 4px 20px}
+.hd h1{font-size:var(--txt-title);font-weight:800;flex:1;position:relative;display:inline-block;padding-bottom:4px}
+.hd h1 .uline{position:absolute;left:0;right:35%;bottom:-2px;height:6px;color:var(--green);opacity:.6;pointer-events:none}
+.hd h1 .uline svg{width:100%;height:100%;display:block}
+.ib{background:var(--card);border:none;width:48px;height:48px;border-radius:16px 14px 17px 15px;cursor:pointer;box-shadow:var(--sh);display:flex;align-items:center;justify-content:center;flex-shrink:0;padding:0}
+.ib svg{width:24px;height:24px}.ib:active{transform:scale(.94)}
+.ib-txt{font-size:22px;line-height:1}
+.bdg{background:var(--card);padding:6px 14px;border-radius:999px;font-weight:700;box-shadow:var(--sh);display:flex;gap:6px;align-items:center;font-size:16px;height:48px}
+.bdg img{width:26px;height:26px}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+@media(min-width:560px){.grid{grid-template-columns:repeat(3,1fr)}}
+.tl{background:var(--card);border:none;border-radius:24px 20px 26px 22px;padding:16px 10px;font-family:inherit;font-size:15px;font-weight:700;color:var(--text);cursor:pointer;box-shadow:var(--sh);transition:transform .15s;display:flex;flex-direction:column;align-items:center;gap:8px;min-height:140px;justify-content:center;position:relative;overflow:hidden}
+.tl::before{content:'';position:absolute;top:8px;right:8px;width:5px;height:5px;border-radius:50%;background:var(--green);opacity:.25}
+.tl::after{content:'';position:absolute;bottom:8px;left:8px;width:4px;height:4px;border-radius:50%;background:var(--peach);opacity:.3}
+.tl:active{transform:scale(.96)}
+.tlic{width:66px;height:66px;border-radius:50% 48% 52% 50%;display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:800;overflow:hidden}
+.tlic img{width:56px;height:56px}
+.lt{display:flex;align-items:center;gap:8px;padding-bottom:16px}
+.bb{background:var(--card);border:none;width:48px;height:48px;border-radius:16px 14px 17px 15px;cursor:pointer;box-shadow:var(--sh);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.bb svg{width:22px;height:22px}.bb svg path{stroke:var(--text)}
+.pg{flex:1;display:flex;gap:5px;justify-content:center;flex-wrap:wrap}
+.dt{width:11px;height:11px;border-radius:50%;background:rgba(128,128,128,.25);transition:all .2s}
+.dt.dn{background:var(--green)}.dt.cu{background:var(--green-dark);transform:scale(1.3)}
+.qc{background:var(--card);border-radius:28px 24px 30px 26px;padding:24px 18px;box-shadow:var(--sh);text-align:center;margin-bottom:18px;position:relative}
+.qc::before,.qc::after{content:'';position:absolute;width:6px;height:6px;border-radius:50%;background:var(--green);opacity:.2}
+.qc::before{top:12px;left:14px}.qc::after{bottom:12px;right:14px;background:var(--peach)}
+.vs{min-height:90px;display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:6px 12px;margin-bottom:12px}
+.vs .pic{display:inline-block}.vs .pic svg,.vs .pic img{display:block}
+.pm{font-size:var(--txt-prompt);font-weight:700}.pm .word{color:var(--green-dark)}
+.op{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(100px,1fr))}
+.bt{background:var(--card);border:3px solid transparent;border-radius:24px 20px 26px 22px;padding:20px 10px;font-family:inherit;font-size:var(--txt-opt);font-weight:700;color:var(--text);cursor:pointer;box-shadow:var(--sh);transition:transform .12s,border-color .15s,background .15s;min-height:105px;display:flex;align-items:center;justify-content:center;text-align:center;word-break:break-word;hyphens:auto;overflow-wrap:anywhere;line-height:1.15}
+.bt.bt-text{font-size:var(--txt-opt-text);padding:14px 8px;min-height:90px}
+.bt:active{transform:scale(.96)}
+.bt.correct{background:var(--green-light);border-color:var(--green);animation:pp .3s}
+.bt.wrong{animation:sk .4s;border-color:var(--peach)}
+.bt svg{width:70px;height:70px}.bt img{width:70px;height:70px;object-fit:contain}
+.shadow-svg svg,.shadow-svg img{filter:brightness(0) saturate(100%);opacity:.7}
+body.theme-dark .shadow-svg svg,body.theme-dark .shadow-svg img{filter:brightness(0) invert(1) opacity(.85)}
+@keyframes pp{0%{transform:scale(1)}50%{transform:scale(1.07)}100%{transform:scale(1)}}
+@keyframes sk{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.lc{background:var(--card);border-radius:28px 24px 30px 26px;padding:30px 20px;box-shadow:var(--sh);text-align:center;margin-bottom:20px}
+.ll{font-size:var(--txt-letter);font-weight:800;color:var(--green);line-height:1;margin-bottom:8px}
+.lw{font-size:var(--txt-word);font-weight:700;color:var(--text);margin-bottom:16px}
+.lp{display:flex;justify-content:center;margin-bottom:4px}.lp img{width:130px;height:130px;object-fit:contain}
+.rw{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(242,232,213,.88);opacity:0;pointer-events:none;transition:opacity .25s;z-index:20}
+body.theme-dark .rw{background:rgba(44,42,38,.9)}.rw.show{opacity:1}
+.rwi{background:var(--card);border-radius:32px 28px 34px 30px;padding:36px 44px;text-align:center;box-shadow:0 12px 40px rgba(90,70,50,.18);animation:pp .35s;transform:rotate(-1.5deg)}
+.rws{width:76px;height:76px;margin:0 auto}.rws img{width:100%;height:100%}
+.rwt{font-size:24px;font-weight:800;margin-top:10px;color:var(--green-dark)}
+.fn{text-align:center;padding:40px 20px}
+.fe{width:120px;height:120px;margin:0 auto}.fe img{width:100%;height:100%;object-fit:contain}
+.ft{font-size:28px;font-weight:800;margin:14px 0 6px}
+.fs{color:var(--soft);margin-bottom:26px;font-size:18px}
+.bp{background:var(--green);color:white;border:none;border-radius:20px 17px 22px 19px;padding:16px 34px;font-family:inherit;font-size:19px;font-weight:700;cursor:pointer;box-shadow:var(--sh)}
+.bp:active{transform:scale(.96)}
+.bs{background:var(--card);color:var(--text);border:none;border-radius:20px 17px 22px 19px;padding:14px 26px;font-family:inherit;font-size:17px;font-weight:600;cursor:pointer;box-shadow:var(--sh)}
+.sb{background:var(--card);border-radius:22px 20px 24px 21px;padding:18px;box-shadow:var(--sh);margin-bottom:14px}
+.sl{font-size:14px;font-weight:700;color:var(--soft);margin-bottom:10px;text-transform:uppercase;letter-spacing:.5px}
+.sr{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.vl{display:flex;flex-direction:column;gap:8px}
+.vo{padding:14px 16px;border-radius:14px 12px 15px 13px;background:rgba(128,128,128,.1);border:2px solid transparent;cursor:pointer;font-family:inherit;font-size:16px;font-weight:600;text-align:left;color:var(--text);display:flex;align-items:center;gap:10px;width:100%}
+.vo.active{background:var(--green-light);border-color:var(--green)}
+.vo .vi{font-size:20px}.vo .vd{font-size:13px;color:var(--soft);font-weight:500}
+.sw{width:58px;height:34px;border-radius:999px;background:rgba(128,128,128,.35);border:none;cursor:pointer;position:relative;padding:0;transition:background .2s;flex-shrink:0}
+.sw::after{content:'';position:absolute;top:3px;left:3px;width:28px;height:28px;border-radius:50%;background:white;transition:transform .2s;box-shadow:0 2px 6px rgba(0,0,0,.15)}
+.sw.on{background:var(--green)}.sw.on::after{transform:translateX(24px)}
+input[type=range]{width:100%;accent-color:var(--green)}
+input[type=text],textarea{width:100%;font-family:inherit;font-size:16px;color:var(--text);background:rgba(128,128,128,.08);border:2px solid transparent;border-radius:14px;padding:14px 16px;font-weight:600;outline:none;transition:border .2s}
+input[type=text]:focus,textarea:focus{border-color:var(--green)}
+textarea{resize:vertical;min-height:110px;line-height:1.5}
+.rr{display:flex;align-items:center;gap:12px;margin-top:4px}
+.rr span{font-size:14px;color:var(--soft);font-weight:600}
+.size-row{display:flex;gap:8px}
+.size-btn{flex:1;background:rgba(128,128,128,.1);border:2px solid transparent;border-radius:14px;padding:12px;cursor:pointer;font-family:inherit;font-weight:800;color:var(--text);text-align:center}
+.size-btn.s1{font-size:14px}.size-btn.s2{font-size:18px}.size-btn.s3{font-size:22px}
+.size-btn.active{background:var(--green-light);border-color:var(--green)}
+.color-row{display:flex;gap:10px}
+.color-dot{flex:1;aspect-ratio:1;max-width:56px;border-radius:50%;border:3px solid transparent;cursor:pointer;padding:0}
+.color-dot.active{border-color:var(--text);transform:scale(1.08)}
+.color-dot.g{background:#7A9B5C}.color-dot.b{background:#5B7FB8}.color-dot.p{background:#D97A9B}.color-dot.v{background:#8B6DB5}
+.story-card{background:var(--card);border-radius:28px 24px 30px 26px;padding:32px 24px;box-shadow:var(--sh);text-align:center;margin-bottom:20px}
+.story-card .story-pic{width:130px;height:130px;margin:0 auto 16px}
+.story-card .story-pic img{width:100%;height:100%;object-fit:contain}
+.story-card .story-text{font-size:20px;font-weight:700;line-height:1.5}
+#helper{position:fixed;right:14px;bottom:96px;width:96px;height:96px;z-index:5;pointer-events:none;transition:bottom .2s}
+#helper img{width:100%;height:100%;display:block;object-fit:contain}
+#helper.idle{animation:idl 3s ease-in-out infinite}
+#helper.jump{animation:jp .6s ease}
+#helper.tilt{animation:tl .8s ease}
+@keyframes idl{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+@keyframes jp{0%{transform:translateY(0)}30%{transform:translateY(-16px)}60%{transform:translateY(0)}80%{transform:translateY(-6px)}100%{transform:translateY(0)}}
+@keyframes tl{0%,100%{transform:rotate(0)}40%{transform:rotate(-9deg)}70%{transform:rotate(4deg)}}
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);box-shadow:0 -4px 16px rgba(90,70,50,.12);border-top:1px solid rgba(128,128,128,.12);display:flex;justify-content:space-around;align-items:center;padding:8px 8px calc(8px + env(safe-area-inset-bottom));z-index:100;max-width:720px;margin:0 auto;border-radius:20px 20px 0 0}
+body.theme-dark .bottom-nav{box-shadow:0 -4px 16px rgba(0,0,0,.4);border-top-color:rgba(255,255,255,.06)}
+.nav-item{flex:1;background:none;border:none;cursor:pointer;padding:8px 4px;display:flex;flex-direction:column;align-items:center;gap:4px;color:var(--soft);font-family:inherit;font-size:12px;font-weight:700;transition:color .2s,transform .2s;border-radius:12px}
+.nav-item:active{transform:scale(.94)}
+.nav-item.active{color:var(--green)}
+.nav-item .nav-ic{width:28px;height:28px;display:flex;align-items:center;justify-content:center}
+.nav-item .nav-ic svg{width:26px;height:26px;stroke:currentColor}
+.profile-avatar{width:96px;height:96px;border-radius:50%;background:var(--green-light);display:flex;align-items:center;justify-content:center;margin:0 auto 14px;font-size:42px;font-weight:800;color:var(--green-dark);overflow:hidden}
+.profile-avatar img{width:70%;height:70%;object-fit:contain}
+.profile-name{text-align:center;font-size:22px;font-weight:800;margin-bottom:4px}
+.profile-sub{text-align:center;color:var(--soft);font-size:15px;margin-bottom:22px}
+.stat-row{display:flex;gap:10px;margin-bottom:14px}
+.stat-box{flex:1;background:var(--card);border-radius:18px;padding:16px 10px;box-shadow:var(--sh);text-align:center}
+.stat-box .sb-num{font-size:26px;font-weight:800;color:var(--green-dark);line-height:1}
+.stat-box .sb-lbl{font-size:12px;color:var(--soft);font-weight:700;margin-top:4px;text-transform:uppercase;letter-spacing:.3px}
+.menu-item{display:flex;align-items:center;gap:14px;width:100%;background:var(--card);border:none;border-radius:18px;padding:16px 18px;box-shadow:var(--sh);margin-bottom:10px;cursor:pointer;font-family:inherit;font-size:16px;font-weight:700;color:var(--text);text-align:left;transition:transform .12s}
+.menu-item:active{transform:scale(.98)}
+.menu-item .mi-icon{width:36px;height:36px;border-radius:12px;background:var(--green-light);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.menu-item .mi-arrow{margin-left:auto;color:var(--soft);font-size:18px}
+.about-text{background:var(--card);border-radius:20px;padding:22px;box-shadow:var(--sh);line-height:1.6;font-size:16px}
+.about-text p{margin-bottom:12px}.about-text p:last-child{margin-bottom:0}
+.toast{position:fixed;bottom:110px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--green);color:white;padding:12px 24px;border-radius:16px;font-weight:700;font-size:15px;box-shadow:0 8px 24px rgba(0,0,0,.2);opacity:0;pointer-events:none;transition:opacity .3s,transform .3s;z-index:200;max-width:90%}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+<div id="app"><div id="screen"></div></div>
+<div id="helper" class="idle"></div>
+<div class="rw" id="reward"><div class="rwi"><div class="rws" id="rewardStar"></div><div class="rwt" id="rewardText">Молодец!</div></div></div>
+<div class="bottom-nav" id="bottomNav"></div>
+<div class="toast" id="toast"></div>
+<script>
+const CDN='https://cdn.jsdelivr.net/gh/jdecked/twemoji@15.1.0/assets/svg/';
+const ic={
+apple:CDN+'1f34e.svg',banana:CDN+'1f34c.svg',grapes:CDN+'1f347.svg',watermelon:CDN+'1f349.svg',
+house:CDN+'1f3e0.svg',cat:CDN+'1f431.svg',dog:CDN+'1f436.svg',ball:CDN+'26bd.svg',
+sun:CDN+'2600.svg',star:CDN+'2b50.svg',fish:CDN+'1f41f.svg',flower:CDN+'1f338.svg',
+bee:CDN+'1f41d.svg',balloon:CDN+'1f388.svg',cow:CDN+'1f404.svg',chicken:CDN+'1f414.svg',
+horse:CDN+'1f434.svg',sheep:CDN+'1f411.svg',tree:CDN+'1f333.svg',car:CDN+'1f697.svg',
+bus:CDN+'1f68c.svg',bicycle:CDN+'1f6b2.svg',moon:CDN+'1f319.svg',earth:CDN+'1f30d.svg',
+seedling:CDN+'1f331.svg',rabbit:CDN+'1f430.svg',pear:CDN+'1f350.svg',orange:CDN+'1f34a.svg',
+lemon:CDN+'1f34b.svg',mushroom:CDN+'1f344.svg',fir:CDN+'1f332.svg',beetle:CDN+'1f41e.svg',
+doll:CDN+'1f9f8.svg',yogurt:CDN+'1f95b.svg',nose:CDN+'1f443.svg',window:CDN+'1fa9f.svg',
+penguin:CDN+'1f427.svg',tiger:CDN+'1f42f.svg',duck:CDN+'1f986.svg',flag:CDN+'1f6a9.svg',
+bread:CDN+'1f35e.svg',clock:CDN+'1f550.svg',icecream:CDN+'1f366.svg',spinner:CDN+'1f300.svg',
+sock:CDN+'1f9e6.svg',cup:CDN+'2615.svg',mitten:CDN+'1f9e4.svg',shoe:CDN+'1f45f.svg',
+hedgehog:CDN+'1f994.svg',hedgehogBig:CDN+'1f994.svg',confetti:CDN+'1f389.svg',appleSmall:CDN+'1f34e.svg',
+snowflake:CDN+'2744.svg',snowman:CDN+'26c4.svg',sunflower:CDN+'1f33b.svg',leaf:CDN+'1f342.svg',
+rainbow:CDN+'1f308.svg',umbrella:CDN+'2602.svg',cloud:CDN+'2601.svg',droplet:CDN+'1f4a7.svg',
+nest:CDN+'1fab9.svg',cave:CDN+'1f573.svg',barn:CDN+'1f3da.svg',hive:CDN+'1f41d.svg',
+happy:CDN+'1f60a.svg',sad:CDN+'1f622.svg',angry:CDN+'1f620.svg',surprised:CDN+'1f62e.svg',
+scared:CDN+'1f628.svg',sleepy:CDN+'1f634.svg',heart:CDN+'2764.svg',
+plus:CDN+'2795.svg',minus:CDN+'2796.svg',
+teddy:CDN+'1f9f8.svg',cake:CDN+'1f382.svg',candy:CDN+'1f36c.svg',
+gear:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>',
+arrowLeft:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>',
+homeIcon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8v9a2 2 0 0 1-2 2h-4v-7h-6v7H5a2 2 0 0 1-2-2z"/></svg>',
+userIcon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/></svg>'
+};
+function ss(n,s){var v=ic[n];if(!v)return'';if(v.charAt(0)==='<'){return v.replace('<svg ','<svg style="width:'+s+'px;height:'+s+'px;display:block" ');}return '<img src="'+v+'" alt="" style="width:'+s+'px;height:'+s+'px;display:block;object-fit:contain">';}
+function pc(n,s){s=s||60;return '<span class="pic">'+ss(n,s)+'</span>';}
+function mn(n,c,s){s=s||40;var o='';for(var i=0;i<c;i++)o+=pc(n,s);return o;}
+function bg(n){return ss(n,120);}
+function ci(c){return '<svg viewBox="0 0 60 60" style="width:80px;height:80px"><circle cx="30" cy="30" r="26" fill="'+c+'"/></svg>';}
+function sh(n){return '<span class="shadow-svg pic">'+ss(n,110)+'</span>';}
+ 
+const COLORS={
+green:{main:'#7A9B5C',dark:'#5A7A42',light:'#DCEACF',dlight:'#4A5D3A'},
+blue:{main:'#5B7FB8',dark:'#3D5F96',light:'#D6E4F2',dlight:'#3A4D6E'},
+pink:{main:'#D97A9B',dark:'#B05876',light:'#F5DCE5',dlight:'#6E3F52'},
+purple:{main:'#8B6DB5',dark:'#6B4E96',light:'#E5DBF0',dlight:'#4F3A6E'}
+};
+ 
+const STORIES={
+alphabet:'Ёжик хочет выучить буквы. Поможешь ему?',
+numbers:'Ёжик учится считать. Посчитаем вместе?',
+addition:'Ёжик учится складывать. Поможем ему?',
+subtraction:'Ёжик учится вычитать. Поможем ему?',
+shapes:'Ёжик собирает фигуры. Найдём их вместе?',
+colors:'Ёжик учит цвета. Поможем ему?',
+animals:'Ёжик знакомится с животными. Пойдём?',
+world:'Ёжик узнаёт, как устроен мир. Расскажем?',
+logic:'Ёжик ищет, что лишнее. Поможем ему?',
+seasons:'Ёжик хочет узнать про времена года. Расскажем?',
+homes:'Ёжик ищет, кто где живёт. Поможем?',
+emotions:'Ёжик учится понимать чувства. Поможем?',
+compare:'Ёжик сравнивает, где больше. Поможем?',
+patterns:'Ёжик ищет, что дальше. Поможем?',
+matchShadow:'Ёжик потерял тени. Поможем найти?',
+matchSame:'Ёжик ищет одинаковые картинки. Поможем?',
+matchShape:'Ёжик ищет форму предметов. Поможем?',
+matchCount:'Ёжик считает предметы. Поможем?',
+matchPair:'Ёжик ищет пары. Поможем ему?',
+alphabetTest:'Проверим, что ты уже знаешь! Готов?'
+};
+ 
+const AB=[
+{l:'А',n:'а',w:'Арбуз',p:'watermelon'},{l:'Б',n:'бэ',w:'Банан',p:'banana'},
+{l:'В',n:'вэ',w:'Виноград',p:'grapes'},{l:'Г',n:'гэ',w:'Гриб',p:'mushroom'},
+{l:'Д',n:'дэ',w:'Дом',p:'house'},{l:'Е',n:'е',w:'Ель',p:'fir'},
+{l:'Ё',n:'ё',w:'Ёжик',p:'hedgehog'},{l:'Ж',n:'жэ',w:'Жук',p:'beetle'},
+{l:'З',n:'зэ',w:'Заяц',p:'rabbit'},{l:'И',n:'и',w:'Игрушка',p:'doll'},
+{l:'Й',n:'и краткое',w:'Йогурт',p:'yogurt'},{l:'К',n:'ка',w:'Кошка',p:'cat'},
+{l:'Л',n:'эль',w:'Лимон',p:'lemon'},{l:'М',n:'эм',w:'Мяч',p:'ball'},
+{l:'Н',n:'эн',w:'Нос',p:'nose'},{l:'О',n:'о',w:'Окно',p:'window'},
+{l:'П',n:'пэ',w:'Пингвин',p:'penguin'},{l:'Р',n:'эр',w:'Рыба',p:'fish'},
+{l:'С',n:'эс',w:'Солнце',p:'sun'},{l:'Т',n:'тэ',w:'Тигр',p:'tiger'},
+{l:'У',n:'у',w:'Утка',p:'duck'},{l:'Ф',n:'эф',w:'Флаг',p:'flag'},
+{l:'Х',n:'ха',w:'Хлеб',p:'bread'},{l:'Ц',n:'цэ',w:'Цыплёнок',p:'chicken'},
+{l:'Ч',n:'че',w:'Часы',p:'clock'},{l:'Ш',n:'ша',w:'Шар',p:'balloon'},
+{l:'Щ',n:'ща',w:'Щенок',p:'dog'},{l:'Э',n:'э',w:'Эскимо',p:'icecream'},
+{l:'Ю',n:'ю',w:'Юла',p:'spinner'},{l:'Я',n:'я',w:'Яблоко',p:'apple'}
+];
+function buildABQ(){
+  var p=AB.slice(),pi=[],u={};
+  while(pi.length<6&&Object.keys(u).length<p.length){
+    var i=Math.floor(Math.random()*p.length);
+    if(u[i])continue;u[i]=1;pi.push(p[i]);
+  }
+  return pi.map(function(it){
+    var o=p.filter(function(x){return x.l!==it.l}),wr=[];
+    while(wr.length<2){var w=o[Math.floor(Math.random()*o.length)];if(wr.indexOf(w.l)===-1)wr.push(w.l);}
+    var op=[it.l,wr[0],wr[1]].sort(function(){return Math.random()-.5});
+    return{prompt:'На какую букву начинается слово <span class="word">«'+it.w+'»</span>?',speak:'На какую букву начинается слово '+it.w+'?',visual:bg(it.p),options:op,correct:op.indexOf(it.l)};
+  });
+}
+ 
+const CT={
+alphabet:{title:'Алфавит',icon:'<div class="tlic" style="background:var(--green-light);color:var(--green-dark);font-size:26px">Аа</div>',type:'menu',menu:'alphabet'},
+numbers:{title:'Цифры',icon:'<div class="tlic" style="background:#FBE5D0;color:#C4703C;font-size:24px">123</div>',type:'lesson',lesson:'numbers'},
+addition:{title:'Сложение',icon:'<div class="tlic" style="background:#D6E4F2;color:#3D6396;font-size:22px">1+2</div>',type:'lesson',lesson:'addition'},
+subtraction:{title:'Вычитание',icon:'<div class="tlic" style="background:#F0E0EE;color:#8A5C86;font-size:22px">3−1</div>',type:'lesson',lesson:'subtraction'},
+shapes:{title:'Фигуры',icon:'<div class="tlic" style="background:#F0E0EE;color:#8A5C86;font-size:20px">◆●▲</div>',type:'lesson',lesson:'shapes'},
+colors:{title:'Цвета',icon:'<div class="tlic" style="background:var(--card);gap:3px"><span style="width:13px;height:13px;border-radius:50%;background:#E05353;display:block"></span><span style="width:13px;height:13px;border-radius:50%;background:#F0C24B;display:block"></span><span style="width:13px;height:13px;border-radius:50%;background:#7BA05B;display:block"></span></div>',type:'lesson',lesson:'colors'},
+animals:{title:'Животные',icon:'<div class="tlic">'+ss('cat',56)+'</div>',type:'lesson',lesson:'animals'},
+world:{title:'Окружающий мир',icon:'<div class="tlic">'+ss('seedling',56)+'</div>',type:'lesson',lesson:'world'},
+seasons:{title:'Времена года',icon:'<div class="tlic">'+ss('leaf',56)+'</div>',type:'lesson',lesson:'seasons'},
+homes:{title:'Кто где живёт',icon:'<div class="tlic">'+ss('nest',56)+'</div>',type:'lesson',lesson:'homes'},
+logic:{title:'Что лишнее',icon:'<div class="tlic" style="background:var(--green-light);color:var(--green-dark);font-size:30px">?</div>',type:'lesson',lesson:'logic'},
+compare:{title:'Больше-меньше',icon:'<div class="tlic" style="background:#FBE5D0;color:#C4703C;font-size:22px">⇄</div>',type:'lesson',lesson:'compare'},
+patterns:{title:'Продолжи ряд',icon:'<div class="tlic" style="background:#D6E4F2;color:#3D6396;font-size:24px">•••</div>',type:'lesson',lesson:'patterns'},
+match:{title:'Игры на соотношение',icon:'<div class="tlic" style="background:#FBE5D0;color:#8A5C86;font-size:28px">⇄</div>',type:'menu',menu:'match'}
+};
+ 
+const LS={
+numbers:{title:'Цифры',questions:[
+{prompt:'Сколько яблок?',visual:mn('apple',3,46),speak:'Сколько яблок?',options:['2','3','4'],correct:1},
+{prompt:'Сколько мячей?',visual:mn('ball',2,46),speak:'Сколько мячей?',options:['1','3','2'],correct:2},
+{prompt:'Сколько звёзд?',visual:mn('star',5,40),speak:'Сколько звёзд?',options:['5','4','6'],correct:0},
+{prompt:'Сколько рыбок?',visual:mn('fish',4,44),speak:'Сколько рыбок?',options:['3','4','5'],correct:1},
+{prompt:'Сколько цветов?',visual:bg('flower'),speak:'Сколько цветов?',options:['1','2','3'],correct:0},
+{prompt:'Сколько пчёлок?',visual:mn('bee',6,36),speak:'Сколько пчёлок?',options:['5','6','7'],correct:1}]},
+addition:{title:'Сложение',questions:[
+{prompt:'1 + 1 = ?',visual:mn('apple',1,40)+'<span style="font-size:36px;font-weight:700;padding:0 4px">+</span>'+mn('apple',1,40),speak:'Один плюс один?',options:['2','3','1'],correct:0},
+{prompt:'2 + 1 = ?',visual:mn('ball',2,38)+'<span style="font-size:36px;font-weight:700;padding:0 4px">+</span>'+mn('ball',1,38),speak:'Два плюс один?',options:['2','4','3'],correct:2},
+{prompt:'1 + 2 = ?',visual:mn('flower',1,40)+'<span style="font-size:36px;font-weight:700;padding:0 4px">+</span>'+mn('flower',2,40),speak:'Один плюс два?',options:['3','2','4'],correct:0},
+{prompt:'2 + 2 = ?',visual:mn('fish',2,40)+'<span style="font-size:36px;font-weight:700;padding:0 4px">+</span>'+mn('fish',2,40),speak:'Два плюс два?',options:['3','4','5'],correct:1},
+{prompt:'3 + 1 = ?',visual:mn('star',3,36)+'<span style="font-size:36px;font-weight:700;padding:0 4px">+</span>'+mn('star',1,36),speak:'Три плюс один?',options:['3','5','4'],correct:2},
+{prompt:'1 + 3 = ?',visual:mn('balloon',1,38)+'<span style="font-size:36px;font-weight:700;padding:0 4px">+</span>'+mn('balloon',3,38),speak:'Один плюс три?',options:['4','3','5'],correct:0}]},
+subtraction:{title:'Вычитание',questions:[
+{prompt:'2 − 1 = ?',visual:'<span style="font-size:32px;font-weight:800">2 − 1</span>',speak:'Два минус один?',options:['1','2','3'],correct:0},
+{prompt:'3 − 1 = ?',visual:'<span style="font-size:32px;font-weight:800">3 − 1</span>',speak:'Три минус один?',options:['3','2','1'],correct:1},
+{prompt:'4 − 2 = ?',visual:'<span style="font-size:32px;font-weight:800">4 − 2</span>',speak:'Четыре минус два?',options:['3','1','2'],correct:2},
+{prompt:'5 − 2 = ?',visual:'<span style="font-size:32px;font-weight:800">5 − 2</span>',speak:'Пять минус два?',options:['3','2','4'],correct:0},
+{prompt:'3 − 2 = ?',visual:'<span style="font-size:32px;font-weight:800">3 − 2</span>',speak:'Три минус два?',options:['2','1','3'],correct:1},
+{prompt:'5 − 1 = ?',visual:'<span style="font-size:32px;font-weight:800">5 − 1</span>',speak:'Пять минус один?',options:['3','5','4'],correct:2}]},
+shapes:{title:'Фигуры',questions:[
+{prompt:'Найди круг',speak:'Найди круг',options:[{html:ci('#7A9B5C')},{html:'<svg viewBox="0 0 60 60" style="width:70px;height:70px"><rect x="8" y="8" width="44" height="44" rx="6" fill="#E8A87C"/></svg>'},{html:'<svg viewBox="0 0 60 60" style="width:70px;height:70px"><polygon points="30,8 54,52 6,52" fill="#9BC1D8"/></svg>'}],correct:0},
+{prompt:'Найди квадрат',speak:'Найди квадрат',options:[{html:'<svg viewBox="0 0 60 60" style="width:70px;height:70px"><polygon points="30,8 54,52 6,52" fill="#9BC1D8"/></svg>'},{html:'<svg viewBox="0 0 60 60" style="width:70px;height:70px"><rect x="8" y="8" width="44" height="44" rx="6" fill="#E8A87C"/></svg>'},{html:ci('#7A9B5C')}],correct:1},
+{prompt:'Найди треугольник',speak:'Найди треугольник',options:[{html:ci('#7A9B5C')},{html:'<svg viewBox="0 0 60 60" style="width:70px;height:70px"><rect x="4" y="18" width="52" height="26" rx="5" fill="#C8A2C8"/></svg>'},{html:'<svg viewBox="0 0 60 60" style="width:70px;height:70px"><polygon points="30,8 54,52 6,52" fill="#9BC1D8"/></svg>'}],correct:2},
+{prompt:'Найди звезду',speak:'Найди звезду',options:[{html:'<svg viewBox="0 0 60 60" style="width:70px;height:70px"><polygon points="30,6 37,24 56,24 41,36 47,54 30,43 13,54 19,36 4,24 23,24" fill="#F0C24B"/></svg>'},{html:ci('#7A9B5C')},{html:'<svg viewBox="0 0 60 60" style="width:70px;height:70px"><rect x="8" y="8" width="44" height="44" rx="6" fill="#E8A87C"/></svg>'}],correct:0},
+{prompt:'Найди прямоугольник',speak:'Найди прямоугольник',options:[{html:'<svg viewBox="0 0 60 60" style="width:70px;height:70px"><rect x="8" y="8" width="44" height="44" rx="6" fill="#E8A87C"/></svg>'},{html:'<svg viewBox="0 0 60 60" style="width:70px;height:70px"><rect x="4" y="18" width="52" height="26" rx="5" fill="#C8A2C8"/></svg>'},{html:ci('#7A9B5C')}],correct:1},
+{prompt:'Найди овал',speak:'Найди овал',options:[{html:ci('#7A9B5C')},{html:'<svg viewBox="0 0 60 60" style="width:70px;height:70px"><polygon points="30,8 54,52 6,52" fill="#9BC1D8"/></svg>'},{html:'<svg viewBox="0 0 60 60" style="width:70px;height:70px"><ellipse cx="30" cy="30" rx="26" ry="18" fill="#7A9B5C"/></svg>'}],correct:2}]},
+colors:{title:'Цвета',questions:[
+{prompt:'Какого цвета круг?',visual:ci('#E05353'),speak:'Какого цвета круг?',options:['Красный','Синий','Зелёный'],correct:0},
+{prompt:'Какого цвета круг?',visual:ci('#4A7BC8'),speak:'Какого цвета круг?',options:['Жёлтый','Синий','Красный'],correct:1},
+{prompt:'Какого цвета круг?',visual:ci('#F0C24B'),speak:'Какого цвета круг?',options:['Зелёный','Оранжевый','Жёлтый'],correct:2},
+{prompt:'Какого цвета круг?',visual:ci('#7A9B5C'),speak:'Какого цвета круг?',options:['Зелёный','Синий','Красный'],correct:0},
+{prompt:'Какого цвета круг?',visual:ci('#E8863C'),speak:'Какого цвета круг?',options:['Красный','Оранжевый','Жёлтый'],correct:1},
+{prompt:'Какого цвета круг?',visual:ci('#9B6DB5'),speak:'Какого цвета круг?',options:['Синий','Розовый','Фиолетовый'],correct:2}]},
+animals:{title:'Животные',questions:[
+{prompt:'У кошки — ...',visual:bg('cat'),speak:'У кошки кто?',options:['щенок','котёнок','телёнок'],correct:1},
+{prompt:'У собаки — ...',visual:bg('dog'),speak:'У собаки кто?',options:['щенок','котёнок','ягнёнок'],correct:0},
+{prompt:'У коровы — ...',visual:bg('cow'),speak:'У коровы кто?',options:['жеребёнок','телёнок','цыплёнок'],correct:1},
+{prompt:'У курицы — ...',visual:bg('chicken'),speak:'У курицы кто?',options:['цыплёнок','утёнок','щенок'],correct:0},
+{prompt:'У лошади — ...',visual:bg('horse'),speak:'У лошади кто?',options:['телёнок','жеребёнок','котёнок'],correct:1},
+{prompt:'У овцы — ...',visual:bg('sheep'),speak:'У овцы кто?',options:['ягнёнок','щенок','цыплёнок'],correct:0}]},
+world:{title:'Окружающий мир',questions:[
+{prompt:'Как называется наша планета?',visual:bg('earth'),speak:'Как называется наша планета?',options:['Луна','Земля','Солнце'],correct:1},
+{prompt:'Что светит днём на небе?',visual:bg('sun'),speak:'Что светит днём на небе?',options:['Луна','Звезда','Солнце'],correct:2},
+{prompt:'Что светит ночью?',visual:bg('moon'),speak:'Что светит ночью?',options:['Луна','Солнце','Облако'],correct:0},
+{prompt:'Где живут рыбы?',visual:bg('fish'),speak:'Где живут рыбы?',options:['В лесу','В воде','В небе'],correct:1},
+{prompt:'Что нужно растению?',visual:bg('seedling'),speak:'Что нужно растению?',options:['Вода и солнце','Снег','Песок'],correct:0},
+{prompt:'Кто живёт в лесу?',visual:bg('tree')+bg('rabbit'),speak:'Кто живёт в лесу?',options:['Пингвин','Заяц','Кит'],correct:1}]},
+seasons:{title:'Времена года',questions:[
+{prompt:'Когда идёт снег?',visual:bg('snowflake'),speak:'Когда идёт снег?',options:['Летом','Зимой','Весной'],correct:1},
+{prompt:'Когда на деревьях жёлтые листья?',visual:bg('leaf'),speak:'Когда на деревьях жёлтые листья?',options:['Осенью','Зимой','Летом'],correct:0},
+{prompt:'Когда очень жарко и цветут цветы?',visual:bg('sunflower'),speak:'Когда очень жарко и цветут цветы?',options:['Зимой','Осенью','Летом'],correct:2},
+{prompt:'Когда тает снег и бегут ручьи?',visual:bg('droplet'),speak:'Когда тает снег и бегут ручьи?',options:['Весной','Летом','Зимой'],correct:0},
+{prompt:'Что бывает зимой?',visual:bg('snowman'),speak:'Что бывает зимой?',options:['Листопад','Снеговик','Радуга'],correct:1},
+{prompt:'Когда бывает радуга после дождя?',visual:bg('rainbow'),speak:'Когда бывает радуга после дождя?',options:['Зимой','Осенью','Летом'],correct:2}]},
+homes:{title:'Кто где живёт',questions:[
+{prompt:'Где живёт птица?',visual:bg('chicken')+bg('nest'),speak:'Где живёт птица?',options:['В норе','В гнезде','В берлоге'],correct:1},
+{prompt:'Где живёт медведь зимой?',visual:'<img src="'+CDN+'1f43b.svg" style="width:120px;height:120px;object-fit:contain">',speak:'Где живёт медведь зимой?',options:['В берлоге','В гнезде','В будке'],correct:0},
+{prompt:'Где живёт собака?',visual:bg('dog'),speak:'Где живёт собака?',options:['В норе','В гнезде','В будке'],correct:2},
+{prompt:'Где живёт лиса?',visual:'<img src="'+CDN+'1f98a.svg" style="width:120px;height:120px;object-fit:contain">',speak:'Где живёт лиса?',options:['В норе','В гнезде','В улье'],correct:0},
+{prompt:'Где живут пчёлы?',visual:bg('bee'),speak:'Где живут пчёлы?',options:['В норе','В улье','В берлоге'],correct:1},
+{prompt:'Где живёт рыбка?',visual:bg('fish'),speak:'Где живёт рыбка?',options:['В небе','В лесу','В воде'],correct:2}]},
+logic:{title:'Что лишнее',questions:[
+{prompt:'Что лишнее?',visual:mn('apple',1,38)+mn('banana',1,38)+mn('grapes',1,38)+mn('cat',1,38),speak:'Что лишнее?',options:[pc('apple',44),pc('cat',44),pc('grapes',44)],correct:1},
+{prompt:'Что лишнее?',visual:mn('dog',1,38)+mn('cat',1,38)+mn('rabbit',1,38)+mn('car',1,38),speak:'Что лишнее?',options:[pc('car',44),pc('dog',44),pc('rabbit',44)],correct:0},
+{prompt:'Что лишнее?',visual:mn('ball',1,38)+mn('apple',1,38)+mn('flower',1,38)+mn('star',1,38),speak:'Что лишнее?',options:[pc('ball',44),pc('apple',44),pc('flower',44)],correct:1},
+{prompt:'Что лишнее?',visual:mn('tree',1,38)+mn('flower',1,38)+mn('seedling',1,38)+mn('car',1,38),speak:'Что лишнее?',options:[pc('tree',44),pc('seedling',44),pc('car',44)],correct:2},
+{prompt:'Что лишнее?',visual:mn('apple',1,38)+mn('pear',1,38)+mn('orange',1,38)+mn('fish',1,38),speak:'Что лишнее?',options:[pc('pear',44),pc('fish',44),pc('orange',44)],correct:1},
+{prompt:'Что лишнее?',visual:mn('car',1,38)+mn('bus',1,38)+mn('bicycle',1,38)+mn('tree',1,38),speak:'Что лишнее?',options:[pc('tree',44),pc('bus',44),pc('car',44)],correct:0}]},
+compare:{title:'Больше-меньше',questions:[
+{prompt:'Где больше яблок?',visual:mn('apple',2,44)+'<span style="font-size:36px;font-weight:700;padding:0 8px">или</span>'+mn('apple',3,44),speak:'Где больше яблок?',options:['Слева','Справа','Одинаково'],correct:1},
+{prompt:'Где больше мячей?',visual:mn('ball',3,42)+'<span style="font-size:36px;font-weight:700;padding:0 8px">или</span>'+mn('ball',1,42),speak:'Где больше мячей?',options:['Слева','Справа','Одинаково'],correct:0},
+{prompt:'Где меньше звёзд?',visual:mn('star',5,36)+'<span style="font-size:36px;font-weight:700;padding:0 8px">или</span>'+mn('star',2,36),speak:'Где меньше звёзд?',options:['Слева','Справа','Одинаково'],correct:1},
+{prompt:'Где больше рыбок?',visual:mn('fish',4,42)+'<span style="font-size:36px;font-weight:700;padding:0 8px">или</span>'+mn('fish',4,42),speak:'Где больше рыбок?',options:['Слева','Справа','Одинаково'],correct:2},
+{prompt:'Где меньше цветов?',visual:mn('flower',1,50)+'<span style="font-size:36px;font-weight:700;padding:0 8px">или</span>'+mn('flower',4,42),speak:'Где меньше цветов?',options:['Слева','Справа','Одинаково'],correct:0},
+{prompt:'Где больше пчёлок?',visual:mn('bee',6,34)+'<span style="font-size:36px;font-weight:700;padding:0 8px">или</span>'+mn('bee',3,34),speak:'Где больше пчёлок?',options:['Слева','Справа','Одинаково'],correct:0}]},
+patterns:{title:'Продолжи ряд',questions:[
+{prompt:'Что дальше? 🍎 🍌 🍎 🍌 ...',visual:pc('apple',50)+pc('banana',50)+pc('apple',50)+pc('banana',50)+'<span style="font-size:40px;font-weight:800;color:var(--soft)">?</span>',speak:'Что дальше? Яблоко, банан, яблоко, банан...',options:[pc('banana',50),pc('apple',50),pc('grapes',50)],correct:1},
+{prompt:'Что дальше? ⭐ 🍎 ⭐ 🍎 ...',visual:pc('star',50)+pc('apple',50)+pc('star',50)+pc('apple',50)+'<span style="font-size:40px;font-weight:800;color:var(--soft)">?</span>',speak:'Что дальше? Звезда, яблоко, звезда, яблоко...',options:[pc('star',50),pc('apple',50),pc('ball',50)],correct:0},
+{prompt:'Что дальше? 🐟 🐟 🌸 🐟 🐟 ...',visual:pc('fish',46)+pc('fish',46)+pc('flower',46)+pc('fish',46)+pc('fish',46)+'<span style="font-size:40px;font-weight:800;color:var(--soft)">?</span>',speak:'Что дальше?',options:[pc('fish',46),pc('flower',46),pc('apple',46)],correct:1},
+{prompt:'Что дальше? 🔴 🟡 🔴 🟡 ...',visual:ci('#E05353')+ci('#F0C24B')+ci('#E05353')+ci('#F0C24B'),speak:'Что дальше? Красный, жёлтый, красный, жёлтый...',options:[ci('#4A7BC8'),ci('#E05353'),ci('#F0C24B')],correct:1},
+{prompt:'Что дальше? ⚽ ⚽ ⚽ 🍎 ⚽ ⚽ ...',visual:pc('ball',44)+pc('ball',44)+pc('ball',44)+pc('apple',44)+pc('ball',44)+pc('ball',44)+'<span style="font-size:36px;font-weight:800;color:var(--soft)">?</span>',speak:'Что дальше?',options:[pc('ball',44),pc('apple',44),pc('star',44)],correct:1},
+{prompt:'Что дальше? 🌸 🌸 🐝 🌸 🌸 ...',visual:pc('flower',44)+pc('flower',44)+pc('bee',44)+pc('flower',44)+pc('flower',44)+'<span style="font-size:36px;font-weight:800;color:var(--soft)">?</span>',speak:'Что дальше?',options:[pc('flower',44),pc('bee',44),pc('apple',44)],correct:1}]},
+matchShadow:{title:'Тень и предмет',questions:[
+{prompt:'Что это за тень?',visual:sh('cat'),speak:'Что это за тень?',options:[pc('cat',60),pc('ball',60),pc('house',60)],correct:0},
+{prompt:'Что это за тень?',visual:sh('fish'),speak:'Что это за тень?',options:[pc('flower',60),pc('fish',60),pc('apple',60)],correct:1},
+{prompt:'Что это за тень?',visual:sh('tree'),speak:'Что это за тень?',options:[pc('cat',60),pc('apple',60),pc('tree',60)],correct:2},
+{prompt:'Что это за тень?',visual:sh('ball'),speak:'Что это за тень?',options:[pc('ball',60),pc('fish',60),pc('dog',60)],correct:0},
+{prompt:'Что это за тень?',visual:sh('house'),speak:'Что это за тень?',options:[pc('flower',60),pc('house',60),pc('rabbit',60)],correct:1},
+{prompt:'Что это за тень?',visual:sh('flower'),speak:'Что это за тень?',options:[pc('cat',60),pc('apple',60),pc('flower',60)],correct:2}]},
+matchSame:{title:'Найди такое же',questions:[
+{prompt:'Найди такое же',visual:bg('cat'),speak:'Найди такое же',options:[pc('fish',60),pc('cat',60),pc('house',60)],correct:1},
+{prompt:'Найди такое же',visual:bg('apple'),speak:'Найди такое же',options:[pc('apple',60),pc('ball',60),pc('dog',60)],correct:0},
+{prompt:'Найди такое же',visual:bg('flower'),speak:'Найди такое же',options:[pc('tree',60),pc('car',60),pc('flower',60)],correct:2},
+{prompt:'Найди такое же',visual:bg('fish'),speak:'Найди такое же',options:[pc('fish',60),pc('cat',60),pc('apple',60)],correct:0},
+{prompt:'Найди такое же',visual:bg('tree'),speak:'Найди такое же',options:[pc('flower',60),pc('tree',60),pc('bus',60)],correct:1},
+{prompt:'Найди такое же',visual:bg('dog'),speak:'Найди такое же',options:[pc('cat',60),pc('rabbit',60),pc('dog',60)],correct:2}]},
+matchShape:{title:'Форма предмета',questions:[
+{prompt:'Мяч — это какая фигура?',visual:bg('ball'),speak:'Мяч это какая фигура?',options:[{html:ci('#7A9B5C')},{html:'<svg viewBox="0 0 60 60" style="width:70px;height:70px"><rect x="8" y="8" width="44" height="44" rx="6" fill="#E8A87C"/></svg>'},{html:'<svg viewBox="0 0 60 60" style="width:70px;height:70px"><polygon points="30,8 54,52 6,52" fill="#9BC1D8"/></svg>'}],correct:0},
+{prompt:'Окно — это какая фигура?',visual:bg('window'),speak:'Окно это какая фигура?',options:[{html:ci('#7A9B5C')},{html:'<svg viewBox="0 0 60 60" style="width:70px;height:70px"><rect x="8" y="8" width="44" height="44" rx="6" fill="#E8A87C"/></svg>'},{html:'<svg viewBox="0 0 60 60" style="width:70px;height:70px"><polygon points="30,8 54,52 6,52" fill="#9BC1D8"/></svg>'}],correct:1},
+{prompt:'Крыша домика — какая фигура?',visual:bg('house'),speak:'Крыша домика это какая фигура?',options:[{html:ci('#7A9B5C')},{html:'<svg viewBox="0 0 60 60" style="width:70px;height:70px"><rect x="8" y="8" width="44" height="44" rx="6" fill="#E8A87C"/></svg>'},{html:'<svg viewBox="0 0 60 60" style="width:70px;height:70px"><polygon points="30,8 54,52 6,52" fill="#9BC1D8"/></svg>'}],correct:2},
+{prompt:'Яблоко — какая фигура?',visual:bg('apple'),speak:'Яблоко это какая фигура?',options:[{html:ci('#E05353')},{html:'<svg viewBox="0 0 60 60" style="width:70px;height:70px"><rect x="8" y="8" width="44" height="44" rx="6" fill="#E8A87C"/></svg>'},{html:'<svg viewBox="0 0 60 60" style="width:70px;height:70px"><polygon points="30,8 54,52 6,52" fill="#9BC1D8"/></svg>'}],correct:0},
+{prompt:'Флаг — это какая фигура?',visual:bg('flag'),speak:'Флаг это какая фигура?',options:[{html:ci('#7A9B5C')},{html:'<svg viewBox="0 0 60 60" style="width:70px;height:70px"><rect x="4" y="18" width="52" height="26" rx="5" fill="#C8A2C8"/></svg>'},{html:'<svg viewBox="0 0 60 60" style="width:70px;height:70px"><polygon points="30,8 54,52 6,52" fill="#9BC1D8"/></svg>'}],correct:1},
+{prompt:'Ёлка — это какая фигура?',visual:bg('fir'),speak:'Ёлка это какая фигура?',options:[{html:ci('#7A9B5C')},{html:'<svg viewBox="0 0 60 60" style="width:70px;height:70px"><rect x="8" y="8" width="44" height="44" rx="6" fill="#E8A87C"/></svg>'},{html:'<svg viewBox="0 0 60 60" style="width:70px;height:70px"><polygon points="30,8 54,52 6,52" fill="#9BC1D8"/></svg>'}],correct:2}]},
+matchCount:{title:'Количество и цифра',questions:[
+{prompt:'Сколько?',visual:mn('apple',2,44),speak:'Сколько яблок?',options:['1','2','3'],correct:1},
+{prompt:'Сколько?',visual:mn('ball',3,42),speak:'Сколько мячей?',options:['3','2','4'],correct:0},
+{prompt:'Сколько?',visual:mn('star',5,36),speak:'Сколько звёзд?',options:['4','6','5'],correct:2},
+{prompt:'Сколько?',visual:mn('fish',4,42),speak:'Сколько рыбок?',options:['4','3','5'],correct:0},
+{prompt:'Сколько?',visual:mn('flower',1,60),speak:'Сколько цветов?',options:['2','1','3'],correct:1},
+{prompt:'Сколько?',visual:mn('bee',6,34),speak:'Сколько пчёлок?',options:['5','7','6'],correct:2}]},
+matchPair:{title:'Найди пару',questions:[
+{prompt:'Найди пару для носка',visual:bg('sock'),speak:'Найди пару для носка',options:[pc('sock',60),pc('apple',60),pc('cup',60)],correct:0},
+{prompt:'Найди пару для варежки',visual:bg('mitten'),speak:'Найди пару для варежки',options:[pc('car',60),pc('mitten',60),pc('ball',60)],correct:1},
+{prompt:'Найди пару для ботинка',visual:bg('shoe'),speak:'Найди пару для ботинка',options:[pc('flower',60),pc('apple',60),pc('shoe',60)],correct:2},
+{prompt:'Найди пару для варежки',visual:bg('mitten'),speak:'Найди пару для варежки',options:[pc('mitten',60),pc('sock',60),pc('fish',60)],correct:0},
+{prompt:'Найди пару для носка',visual:bg('sock'),speak:'Найди пару для носка',options:[pc('cup',60),pc('sock',60),pc('tree',60)],correct:1},
+{prompt:'Найди пару для ботинка',visual:bg('shoe'),speak:'Найди пару для ботинка',options:[pc('fish',60),pc('tree',60),pc('shoe',60)],correct:2}]}
+};
+const ST={
+  soundOn:localStorage.getItem('soundOn')!=='false',
+  voiceURI:localStorage.getItem('voiceURI')||'',
+  rate:parseFloat(localStorage.getItem('voiceRate')||'0.9'),
+  pitch:parseFloat(localStorage.getItem('voicePitch')||'1.35'),
+  apples:parseInt(localStorage.getItem('apples')||'0',10),
+  theme:localStorage.getItem('theme')||'light',
+  colorTheme:localStorage.getItem('colorTheme')||'green',
+  fontSize:localStorage.getItem('fontSize')||'medium',
+  userName:localStorage.getItem('userName')||''
+};
+function saveST(){
+  localStorage.setItem('soundOn',ST.soundOn);
+  localStorage.setItem('voiceURI',ST.voiceURI);
+  localStorage.setItem('voiceRate',ST.rate);
+  localStorage.setItem('voicePitch',ST.pitch);
+  localStorage.setItem('apples',ST.apples);
+  localStorage.setItem('theme',ST.theme);
+  localStorage.setItem('colorTheme',ST.colorTheme);
+  localStorage.setItem('fontSize',ST.fontSize);
+  localStorage.setItem('userName',ST.userName);
+}
+function applyTheme(){
+  var body=document.body;
+  body.classList.toggle('theme-dark',ST.theme==='dark');
+  body.classList.remove('fs-small','fs-medium','fs-large');
+  body.classList.add('fs-'+ST.fontSize);
+  var c=COLORS[ST.colorTheme]||COLORS.green;
+  var root=document.documentElement;
+  root.style.setProperty('--green',c.main);
+  root.style.setProperty('--green-dark',ST.theme==='dark'?c.main:c.dark);
+  root.style.setProperty('--green-light',ST.theme==='dark'?c.dlight:c.light);
+  var tc=document.querySelector('meta[name="theme-color"]');
+  if(tc)tc.setAttribute('content',c.main);
+}
+ 
+const KW=['Молодец!','Отлично!','Ты справился!','Здорово!','Умничка!','Правильно!','Супер!','Умница!'];
+let VC=[],SN='home';
+function loadVC(){if(!('speechSynthesis' in window))return;const a=speechSynthesis.getVoices();const r=a.filter(v=>v.lang&&v.lang.toLowerCase().indexOf('ru')===0);VC=r.length?r:a;if(SN==='settings')renderST();}
+if('speechSynthesis' in window){loadVC();window.speechSynthesis.onvoiceschanged=loadVC;}
+function say(t){
+  if(!ST.soundOn)return;
+  if(!('speechSynthesis' in window))return;
+  try{
+    speechSynthesis.cancel();
+    const u=new SpeechSynthesisUtterance(t);
+    u.lang='ru-RU';u.rate=ST.rate;u.pitch=ST.pitch;
+    if(ST.voiceURI){const v=VC.find(v=>v.voiceURI===ST.voiceURI);if(v)u.voice=v;}
+    speechSynthesis.speak(u);
+  }catch(e){}
+}
+ 
+const hE=document.getElementById('helper');
+hE.innerHTML=ss('hedgehogBig',96);
+function ha(c){
+  hE.classList.remove('idle','jump','tilt');
+  void hE.offsetWidth;
+  hE.classList.add(c);
+  if(c!=='idle')setTimeout(()=>{hE.classList.remove(c);hE.classList.add('idle');},c==='jump'?650:850);
+}
+ 
+const SC=document.getElementById('screen');
+const RE=document.getElementById('reward');
+const RT=document.getElementById('rewardText');
+const RS=document.getElementById('rewardStar');
+const NAV=document.getElementById('bottomNav');
+const TOAST=document.getElementById('toast');
+const S={lessonKey:null,qIndex:0,locked:false,learnIndex:0,alphabetQs:[],lessonTitle:'',tab:'home'};
+function sh2(h){SC.innerHTML=h;}
+ 
+function showToast(msg){
+  TOAST.textContent=msg;
+  TOAST.classList.add('show');
+  setTimeout(()=>TOAST.classList.remove('show'),2500);
+}
+ 
+function renderNav(){
+  var isHome=S.tab==='home';
+  NAV.innerHTML=
+    '<button class="nav-item '+(isHome?'active':'')+'" id="navHome">'+
+      '<span class="nav-ic">'+ic.homeIcon+'</span><span>Задания</span>'+
+    '</button>'+
+    '<button class="nav-item '+(!isHome?'active':'')+'" id="navProfile">'+
+      '<span class="nav-ic">'+ic.userIcon+'</span><span>Профиль</span>'+
+    '</button>';
+  NAV.querySelector('#navHome').addEventListener('click',()=>{
+    if(S.tab!=='home'){S.tab='home';renderNav();renderHome();}
+  });
+  NAV.querySelector('#navProfile').addEventListener('click',()=>{
+    if(S.tab!=='profile'){S.tab='profile';renderNav();renderProfile();}
+  });
+}
+ 
+function renderHome(){
+  SN='home';
+  var uline='<span class="uline"><svg viewBox="0 0 100 6" preserveAspectRatio="none"><path d="M0 3 Q 12 0,25 3 T50 3 T75 3 T100 3" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round"/></svg></span>';
+  var greet=ST.userName?('Привет, '+ST.userName+'!'):'Учись и играй';
+  sh2('<div class="hd"><h1>'+greet+uline+'</h1><div class="bdg">'+ss('appleSmall',26)+' '+ST.apples+'</div><button class="ib" id="themeBtn" title="Тема"><span class="ib-txt">'+(ST.theme==='dark'?'☀️':'🌙')+'</span></button><button class="ib" id="setBtn">'+ic.gear+'</button></div><div class="grid">'+Object.entries(CT).map(function(e){var k=e[0],c=e[1];return '<button class="tl" data-key="'+k+'">'+c.icon+'<span>'+c.title+'</span></button>';}).join('')+'</div>');
+  SC.querySelector('#setBtn').addEventListener('click',renderST);
+  SC.querySelector('#themeBtn').addEventListener('click',function(){
+    ST.theme=ST.theme==='dark'?'light':'dark';
+    saveST();applyTheme();renderHome();
+  });
+  SC.querySelectorAll('.tl').forEach(b=>b.addEventListener('click',()=>openCat(b.dataset.key)));
+}
+ 
+function openCat(k){
+  var c=CT[k];
+  if(c.type==='menu'){
+    if(c.menu==='alphabet')renderABMenu();
+    else if(c.menu==='match')renderMMenu();
+  }else startL(c.lesson,c.title);
+}
+function renderABMenu(){
+  SN='abm';
+  sh2('<div class="lt"><button class="bb" id="backBtn">'+ic.arrowLeft+'</button><h1 style="flex:1;font-size:22px;font-weight:800">Алфавит</h1></div><div class="grid"><button class="tl" id="learnBtn"><div class="tlic" style="background:var(--green-light);color:var(--green-dark);font-size:22px;font-weight:800">А→Я</div><span>Учим буквы</span></button><button class="tl" id="testBtn"><div class="tlic" style="background:#FBE5D0;color:#C4703C;font-size:32px">?</div><span>Проверь себя</span></button></div>');
+  SC.querySelector('#backBtn').addEventListener('click',renderHome);
+  SC.querySelector('#learnBtn').addEventListener('click',startLearn);
+  SC.querySelector('#testBtn').addEventListener('click',function(){S.alphabetQs=buildABQ();startL('alphabetTest','Алфавит');});
+}
+function renderMMenu(){
+  SN='mm';
+  var it=[
+    {k:'matchShadow',i:'<div class="tlic" style="background:rgba(128,128,128,.15);font-size:32px;color:var(--text)">◐</div>'},
+    {k:'matchSame',i:'<div class="tlic" style="background:#FBE5D0;font-size:30px;color:#C4703C">=</div>'},
+    {k:'matchShape',i:'<div class="tlic" style="background:#F0E0EE;font-size:20px;color:#8A5C86">◆●▲</div>'},
+    {k:'matchCount',i:'<div class="tlic" style="background:#D6E4F2;font-size:24px;color:#3D6396">1..5</div>'},
+    {k:'matchPair',i:'<div class="tlic" style="background:var(--green-light);font-size:28px;color:var(--green-dark)">⇄</div>'}
+  ];
+  sh2('<div class="lt"><button class="bb" id="backBtn">'+ic.arrowLeft+'</button><h1 style="flex:1;font-size:19px;font-weight:800">Игры на соотношение</h1></div><div class="grid">'+it.map(function(x){return '<button class="tl" data-key="'+x.k+'">'+x.i+'<span>'+LS[x.k].title+'</span></button>';}).join('')+'</div>');
+  SC.querySelector('#backBtn').addEventListener('click',renderHome);
+  SC.querySelectorAll('.tl').forEach(b=>b.addEventListener('click',()=>startL(b.dataset.key,LS[b.dataset.key].title)));
+}
+ 
+function startLearn(){SN='learn';S.learnIndex=0;renderLearn();}
+function renderLearn(){
+  var i=S.learnIndex,it=AB[i],t=AB.length;
+  sh2('<div class="lt"><button class="bb" id="backBtn">'+ic.arrowLeft+'</button><div class="pg">'+Array.from({length:t}).map(function(_,j){return '<span class="dt '+(j<i?'dn':'')+' '+(j===i?'cu':'')+'"></span>';}).join('')+'</div><div class="bdg">'+ss('appleSmall',26)+' '+ST.apples+'</div></div><div class="lc"><div class="ll">'+it.l+'</div><div class="lw">'+it.w+'</div><div class="lp">'+ss(it.p,130)+'</div></div><button class="bp" id="nextBtn" style="width:100%">'+(i===t-1?'Закончить':'Дальше')+'</button>');
+  SC.querySelector('#backBtn').addEventListener('click',function(){if('speechSynthesis' in window)speechSynthesis.cancel();renderABMenu();});
+  SC.querySelector('#nextBtn').addEventListener('click',function(){
+    if(i===t-1){ST.apples++;saveST();ha('jump');finish('Алфавит');}
+    else{S.learnIndex++;renderLearn();}
+  });
+  setTimeout(()=>say(it.n+'. '+it.w+'.'),300);
+}
+ 
+function startL(k,t){
+  SN='story';
+  S.lessonKey=k;S.qIndex=0;S.locked=false;S.lessonTitle=t;
+  var story=STORIES[k]||'Ёжик ждёт тебя. Начнём?';
+  sh2('<div class="lt"><button class="bb" id="backBtn">'+ic.arrowLeft+'</button><h1 style="flex:1;font-size:20px;font-weight:800">'+t+'</h1></div><div class="story-card"><div class="story-pic">'+ss('hedgehogBig',130)+'</div><div class="story-text">'+story+'</div></div><button class="bp" id="startBtn" style="width:100%">Начать</button>');
+  SC.querySelector('#backBtn').addEventListener('click',renderHome);
+  SC.querySelector('#startBtn').addEventListener('click',function(){SN='lesson';renderQ();});
+  setTimeout(()=>say(story),350);
+}
+ 
+function getQs(){if(S.lessonKey==='alphabetTest')return S.alphabetQs;return LS[S.lessonKey].questions;}
+ 
+function optHtml(o,i){
+  if(typeof o==='string'){
+    var cls=o.length>3?' bt-text':'';
+    return '<button class="bt'+cls+'" data-i="'+i+'">'+o+'</button>';
+  }
+  return '<button class="bt" data-i="'+i+'">'+o.html+'</button>';
+}
+ 
+function renderQ(){
+  var qs=getQs(),q=qs[S.qIndex];
+  sh2('<div class="lt"><button class="bb" id="backBtn">'+ic.arrowLeft+'</button><div class="pg">'+qs.map(function(_,i){return '<span class="dt '+(i<S.qIndex?'dn':'')+' '+(i===S.qIndex?'cu':'')+'"></span>';}).join('')+'</div><div class="bdg">'+ss('appleSmall',26)+' '+ST.apples+'</div></div><div class="qc">'+(q.visual?'<div class="vs">'+q.visual+'</div>':'')+'<div class="pm">'+q.prompt+'</div></div><div class="op" id="options">'+q.options.map(optHtml).join('')+'</div>');
+  SC.querySelector('#backBtn').addEventListener('click',renderHome);
+  SC.querySelectorAll('.bt').forEach(b=>b.addEventListener('click',()=>chooseA(+b.dataset.i,b)));
+  if(q.speak)setTimeout(()=>say(q.speak),300);
+}
+ 
+function chooseA(i,b){
+  if(S.locked)return;
+  var qs=getQs(),q=qs[S.qIndex];
+  if(i===q.correct){
+    S.locked=true;
+    b.classList.add('correct');
+    ha('jump');
+    var w=KW[Math.floor(Math.random()*KW.length)];
+    showRW(w);say(w);
+    setTimeout(function(){
+      hideRW();S.qIndex++;S.locked=false;
+      if(S.qIndex>=qs.length){
+        ST.apples++;saveST();
+        var t='Урок';
+        if(S.lessonKey==='alphabetTest')t='Алфавит';
+        else if(LS[S.lessonKey])t=LS[S.lessonKey].title;
+        finish(t);
+      }else renderQ();
+    },1100);
+  }else{
+    b.classList.add('wrong');
+    ha('tilt');
+    if(ST.soundOn)say('Попробуй ещё');
+    setTimeout(()=>b.classList.remove('wrong'),500);
+  }
+}
+ 
+function showRW(t){RT.textContent=t;RS.innerHTML=ss('appleSmall',60);RE.classList.add('show');}
+function hideRW(){RE.classList.remove('show');}
+function pl(n,a,b,c){var m10=n%10,m100=n%100;if(m10===1&&m100!==11)return a;if(m10>=2&&m10<=4&&(m100<10||m100>=20))return b;return c;}
+ 
+function finish(t){
+  SN='finish';
+  sh2('<div class="lt"><button class="bb" id="backBtn">'+ic.arrowLeft+'</button><div style="flex:1"></div><div class="bdg">'+ss('appleSmall',26)+' '+ST.apples+'</div></div><div class="fn"><div class="fe">'+ss('confetti',120)+'</div><div class="ft">Урок пройден!</div><div class="fs">'+t+'. Ты молодец! У ёжика теперь '+ST.apples+' '+pl(ST.apples,'яблочко','яблочка','яблочек')+'.</div><button class="bp" id="homeBtn">На главную</button></div>');
+  SC.querySelector('#backBtn').addEventListener('click',renderHome);
+  SC.querySelector('#homeBtn').addEventListener('click',renderHome);
+  say('Урок пройден! Ты молодец!');
+}
+ 
+function renderProfile(){
+  SN='profile';
+  var initial=ST.userName?ST.userName.charAt(0).toUpperCase():'😊';
+  var nameLine=ST.userName?ST.userName:'Гость';
+  sh2(
+    '<div class="lt"><h1 style="flex:1;font-size:22px;font-weight:800">Профиль</h1></div>'+
+    '<div class="profile-avatar">'+initial+'</div>'+
+    '<div class="profile-name">'+nameLine+'</div>'+
+    '<div class="profile-sub">Учимся и играем вместе</div>'+
+    '<div class="stat-row">'+
+      '<div class="stat-box"><div class="sb-num">'+ST.apples+'</div><div class="sb-lbl">Яблочек</div></div>'+
+      '<div class="stat-box"><div class="sb-num">'+Object.keys(CT).length+'</div><div class="sb-lbl">Разделов</div></div>'+
+      '<div class="stat-box"><div class="sb-num">'+AB.length+'</div><div class="sb-lbl">Букв</div></div>'+
+    '</div>'+
+    '<button class="menu-item" id="nameBtn"><span class="mi-icon">✏️</span><span>Имя ребёнка</span><span class="mi-arrow">›</span></button>'+
+    '<button class="menu-item" id="feedbackBtn"><span class="mi-icon">💬</span><span>Отзыв или вопрос</span><span class="mi-arrow">›</span></button>'+
+    '<button class="menu-item" id="aboutBtn"><span class="mi-icon">💛</span><span>О проекте</span><span class="mi-arrow">›</span></button>'+
+    '<button class="menu-item" id="settingsBtn"><span class="mi-icon">⚙️</span><span>Настройки</span><span class="mi-arrow">›</span></button>'
+  );
+  SC.querySelector('#nameBtn').addEventListener('click',renderNameForm);
+  SC.querySelector('#feedbackBtn').addEventListener('click',renderFeedbackForm);
+  SC.querySelector('#aboutBtn').addEventListener('click',renderAbout);
+  SC.querySelector('#settingsBtn').addEventListener('click',renderST);
+}
+ 
+function renderNameForm(){
+  SN='nameForm';
+  var v=ST.userName.replace(/"/g,'&quot;');
+  sh2(
+    '<div class="lt"><button class="bb" id="backBtn">'+ic.arrowLeft+'</button><h1 style="flex:1;font-size:22px;font-weight:800">Имя ребёнка</h1></div>'+
+    '<div class="sb"><div class="sl">Как зовут ребёнка?</div><input type="text" id="nameInput" placeholder="Например, Маша" maxlength="20" value="'+v+'"><div style="font-size:13px;color:var(--soft);margin-top:8px">Имя будет показано на главном экране. Хранится только на этом устройстве.</div></div>'+
+    '<button class="bp" id="saveName" style="width:100%">Сохранить</button>'
+  );
+  SC.querySelector('#backBtn').addEventListener('click',renderProfile);
+  SC.querySelector('#saveName').addEventListener('click',function(){
+    var val=SC.querySelector('#nameInput').value.trim();
+    ST.userName=val;saveST();showToast('Имя сохранено');renderProfile();
+  });
+}
+ 
+function renderFeedbackForm(){
+  SN='feedbackForm';
+  sh2(
+    '<div class="lt"><button class="bb" id="backBtn">'+ic.arrowLeft+'</button><h1 style="flex:1;font-size:20px;font-weight:800">Отзыв или вопрос</h1></div>'+
+    '<div class="sb"><div class="sl">Что бы вы хотели сказать?</div><textarea id="fbText" placeholder="Напишите отзыв, вопрос или пожелание..."></textarea></div>'+
+    '<div class="sb"><div class="sl">Ваше имя или email (необязательно)</div><input type="text" id="fbContact" placeholder="Как с вами связаться?"></div>'+
+    '<button class="bp" id="sendFb" style="width:100%">Отправить</button>'+
+    '<div style="font-size:13px;color:var(--soft);margin-top:14px;text-align:center;line-height:1.5">Сейчас сообщение сохранится только на этом устройстве. Скоро подключим отправку.</div>'
+  );
+  SC.querySelector('#backBtn').addEventListener('click',renderProfile);
+  SC.querySelector('#sendFb').addEventListener('click',function(){
+    var t=SC.querySelector('#fbText').value.trim();
+    if(!t){showToast('Напишите что-нибудь');return;}
+    localStorage.setItem('feedback_'+Date.now(),JSON.stringify({text:t,contact:SC.querySelector('#fbContact').value.trim(),date:new Date().toISOString()}));
+    showToast('Спасибо! Ваш отзыв сохранён');
+    setTimeout(renderProfile,1200);
+  });
+}
+ 
+function renderAbout(){
+  SN='about';
+  sh2(
+    '<div class="lt"><button class="bb" id="backBtn">'+ic.arrowLeft+'</button><h1 style="flex:1;font-size:22px;font-weight:800">О проекте</h1></div>'+
+    '<div class="sb"><div class="about-text">'+
+      '<p><b>«Учись и играй»</b> — приложение для детей 4–7 лет, созданное с особой заботой о детях с расстройствами аутистического спектра.</p>'+
+      '<p>Здесь нет резких звуков, миганий и проигрышей. Все задания повторяются в одном и том же спокойном порядке — чтобы ребёнку было понятно и не тревожно.</p>'+
+      '<p>Ёжик — добрый помощник, который радуется вместе с ребёнком и никогда не ругает за ошибки.</p>'+
+      '<p>Приложение бесплатное, работает без рекламы. Мы верим, что учиться можно с интересом и без стресса.</p>'+
+      '<p>Если у вас есть идеи или замечания — загляните в раздел «Отзыв или вопрос». Мы читаем всё.</p>'+
+    '</div></div>'
+  );
+  SC.querySelector('#backBtn').addEventListener('click',renderProfile);
+}
+ 
+function renderST(){
+  SN='settings';
+  var list=VC.length
+    ? VC.map(function(v,i){return '<button class="vo '+(ST.voiceURI===v.voiceURI?'active':'')+'" data-vi="'+i+'"><span class="vi">🔊</span><span><span style="display:block">'+v.name+'</span><span class="vd">'+v.lang+'</span></span></button>';}).join('')
+    : '<div style="color:var(--soft);font-size:14px">Голоса ещё не загрузились. Открой в Chrome или Safari.</div>';
+ 
+  sh2(
+    '<div class="lt"><button class="bb" id="setBack">'+ic.arrowLeft+'</button><h1 style="flex:1;font-size:22px;font-weight:800">Настройки</h1></div>'+
+    '<div class="sb"><div class="sr"><div><div style="font-weight:800;font-size:17px">Озвучивание</div><div style="font-size:14px;color:var(--soft)">Голосом читать слова и вопросы</div></div><button class="sw '+(ST.soundOn?'on':'')+'" id="soundSwitch"></button></div></div>'+
+    '<div class="sb"><div class="sl">Размер текста</div><div class="size-row"><button class="size-btn s1 '+(ST.fontSize==='small'?'active':'')+'" data-fs="small">Аа</button><button class="size-btn s2 '+(ST.fontSize==='medium'?'active':'')+'" data-fs="medium">Аа</button><button class="size-btn s3 '+(ST.fontSize==='large'?'active':'')+'" data-fs="large">Аа</button></div></div>'+
+    '<div class="sb"><div class="sl">Цвет приложения</div><div class="color-row"><button class="color-dot g '+(ST.colorTheme==='green'?'active':'')+'" data-color="green"></button><button class="color-dot b '+(ST.colorTheme==='blue'?'active':'')+'" data-color="blue"></button><button class="color-dot p '+(ST.colorTheme==='pink'?'active':'')+'" data-color="pink"></button><button class="color-dot v '+(ST.colorTheme==='purple'?'active':'')+'" data-color="purple"></button></div></div>'+
+    '<div class="sb"><div class="sr"><div><div style="font-weight:800;font-size:17px">Тёмная тема</div><div style="font-size:14px;color:var(--soft)">Спокойнее для глаз вечером</div></div><button class="sw '+(ST.theme==='dark'?'on':'')+'" id="themeSwitch"></button></div></div>'+
+    '<div class="sb"><div class="sl">Голос</div><div class="vl" id="voiceList">'+list+'</div></div>'+
+    '<div class="sb"><div class="sl">Скорость речи: '+ST.rate.toFixed(2)+'×</div><input type="range" id="rateRange" min="0.5" max="1.3" step="0.05" value="'+ST.rate+'"><div class="rr"><span>Медленно</span><span style="flex:1"></span><span>Быстрее</span></div></div>'+
+    '<div class="sb"><div class="sl">Высота голоса: '+ST.pitch.toFixed(2)+'</div><input type="range" id="pitchRange" min="0.8" max="1.8" step="0.05" value="'+ST.pitch+'"><div class="rr"><span>Обычный</span><span style="flex:1"></span><span>Мультяшный</span></div></div>'+
+    '<div class="sb"><div class="sr"><div><div style="font-weight:800;font-size:17px">Сбросить яблочки</div><div style="font-size:14px;color:var(--soft)">Сейчас собрано: '+ST.apples+'</div></div><button class="bs" id="resetBtn">Сбросить</button></div></div>'+
+    '<button class="bp" id="testVoice" style="width:100%;margin-top:4px">Проверить голос</button>'
+  );
+ 
+  SC.querySelector('#setBack').addEventListener('click',function(){
+    if(S.tab==='profile')renderProfile();else renderHome();
+  });
+  SC.querySelector('#soundSwitch').addEventListener('click',function(e){
+    ST.soundOn=!ST.soundOn;saveST();
+    e.currentTarget.classList.toggle('on',ST.soundOn);
+    if(!ST.soundOn&&'speechSynthesis' in window)speechSynthesis.cancel();
+  });
+  SC.querySelector('#themeSwitch').addEventListener('click',function(e){
+    ST.theme=ST.theme==='dark'?'light':'dark';saveST();
+    e.currentTarget.classList.toggle('on',ST.theme==='dark');
+    applyTheme();
+  });
+  SC.querySelectorAll('.size-btn').forEach(b=>b.addEventListener('click',function(){
+    ST.fontSize=b.dataset.fs;saveST();applyTheme();renderST();
+  }));
+  SC.querySelectorAll('.color-dot').forEach(b=>b.addEventListener('click',function(){
+    ST.colorTheme=b.dataset.color;saveST();applyTheme();renderST();
+  }));
+  SC.querySelectorAll('.vo').forEach(b=>b.addEventListener('click',function(){
+    var i=+b.dataset.vi;
+    if(VC[i])ST.voiceURI=VC[i].voiceURI;
+    saveST();renderST();
+    setTimeout(()=>say('Привет! Я буду читать задания.'),250);
+  }));
+  var rr=SC.querySelector('#rateRange');
+  rr.addEventListener('input',function(){
+    ST.rate=parseFloat(rr.value);
+    rr.closest('.sb').querySelector('.sl').textContent='Скорость речи: '+ST.rate.toFixed(2)+'×';
+    saveST();
+  });
+  rr.addEventListener('change',()=>say('Так будет читаться задание'));
+  var pr=SC.querySelector('#pitchRange');
+  pr.addEventListener('input',function(){
+    ST.pitch=parseFloat(pr.value);
+    pr.closest('.sb').querySelector('.sl').textContent='Высота голоса: '+ST.pitch.toFixed(2);
+    saveST();
+  });
+  pr.addEventListener('change',()=>say('Так будет звучать голос'));
+  SC.querySelector('#resetBtn').addEventListener('click',function(){
+    if(confirm('Сбросить все яблочки?')){ST.apples=0;saveST();renderST();}
+  });
+  SC.querySelector('#testVoice').addEventListener('click',()=>say('Привет! Давай учиться и играть!'));
+ 
+  if(VC.length===0&&'speechSynthesis' in window){
+    setTimeout(function(){loadVC();},400);
+  }
+}
+ 
+applyTheme();
+renderNav();
+renderHome();
+</script>
+</body>
+</html>

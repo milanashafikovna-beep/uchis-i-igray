@@ -1,0 +1,24 @@
+{
+  "name": "Учимся и играем",
+  "short_name": "Ёжик",
+  "description": "Спокойное приложение для детей 4–7 лет",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#F2E8D5",
+  "theme_color": "#7A9B5C",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}
